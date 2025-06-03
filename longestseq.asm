@@ -47,10 +47,10 @@ next_char:
         ;jesli tu wczyta 0 to i tak je przeanalizuje, konczac jakiekolwiek zaczete sekwencje - czyli dobrze
         movzx   eax, al ;rozszerz al zerami do eax
         cmp     byte [edx + eax], 1
-        jz      not_in_pattern ;nie jest we wzorcu -> albo kontynuuj albo skoncz sekwencje jesli zaczeta
+        jne      not_in_pattern ;nie jest we wzorcu -> albo kontynuuj albo skoncz sekwencje jesli zaczeta
         ;jest we wzorcu
         test    esi, esi  ;czy esi to 0 -> jesli tak sekwencja nie zaczeta
-
+        ;here i will continue
 
 not_in_pattern:
         test    esi, esi
@@ -72,7 +72,9 @@ clear_curr_sequence:
 
 
 fin:
-        mov     byte [edx - 4 + ecx], 0 ; zapisz 0 na koncu zwracanego stringa
+        mov     ebx, [edx - 4]  ;ebx to ptr na poczatek najdluzszej sekwencji
+        add     ebx, ecx        ;dodaj dlugosc zeby otrzymac pointer na koniec stringa
+        mov     byte [ebx], 0   ;zapisz 0 na koncu zwracanego stringa
         mov     eax, [edx - 4]  ;do eax pointer na zwracany string
         add     esp, 4
         add     esp, 256 ; zwolnienie miejsca na stosie
