@@ -35,7 +35,8 @@ set_up_finding_sequence:
         sub     esp, 4  ;miejsce na pointer do poczatku najlepszej sekwencji
         ;mov    cos, edx - 4
         mov     ebx, [ebp+8]    ;ebx wskazuje na string z argumentu
-        mov     edi, [ebp+8]    ;edi bedzie wskazywac na poczatek aktualnej
+        mov     edi, ebx    ;edi bedzie wskazywac na poczatek aktualnej
+        mov     [edx - 4], ebx
         xor     esi, esi        ;esi bedzie licznikiem aktualnej sekwencji
         xor     ecx, ecx        ;ecx bedzie licznikiem najdluzszej sekwencji
         ;al bedzie na znak czytany
@@ -44,17 +45,22 @@ set_up_finding_sequence:
 
 next_char:
         mov     al, [ebx] ;al ma aktualny znak
-        ;jesli tu wczyta 0 to i tak je przeanalizuje, konczac jakiekolwiek zaczete sekwencje - czyli dobrze
+        inc     ebx ;ebx wskazuje na nastepny znak
         movzx   eax, al ;rozszerz al zerami do eax
         cmp     byte [edx + eax], 1
         jne      not_in_pattern ;nie jest we wzorcu -> albo kontynuuj albo skoncz sekwencje jesli zaczeta
         ;jest we wzorcu
         test    esi, esi  ;czy esi to 0 -> jesli tak sekwencja nie zaczeta
-        ;here i will continue
+        jnz     increase_len_counter
+        mov     edi, ebx        ;zachowaj ebx -> ale ono wskazuje juz na nastepny znak
+        dec     edi             ; wiec zmniejsz o 1 zeby zachowac poczatek aktualnej sekwencji
+increase_len_counter:
+        inc     esi    ;zwieksz licznik aktualnej sekwencji
+        jmp     next_char
 
 not_in_pattern:
         test    esi, esi
-        jz      next_char ; sekwencja nie zaczeta -> kontunuuj
+        jz      continue_loop ; sekwencja nie zaczeta -> kontunuuj
 end_sequence:
         cmp     esi, ecx ;porownanie dlugosci curr_seq i najdluzszej sekwencji
         jle     clear_curr_sequence
@@ -64,12 +70,9 @@ end_sequence:
 clear_curr_sequence:
         xor     esi, esi ;wyzerowanie licznika aktualnej sekwencji
         ;kiedy dojdzie do 0 to zawsze wejdzie tutaj i zakonczy sekwencje
+continue_loop:
         test    al, al  ;czy przeanalizowany znak to 0
         jnz      next_char ;jesli nie zerto -> kontynuuj, jesli 0 -> idz do fin
-
-
-
-
 
 fin:
         mov     ebx, [edx - 4]  ;ebx to ptr na poczatek najdluzszej sekwencji
