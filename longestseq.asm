@@ -15,7 +15,7 @@ longestseq:
         mov     ebx, [ebp+12]   ;wskazuje na wzorzec
 
 set_up_saving_space:
-        mov     byte [edx + 256 - ecx], 0       ;zapisz 0 pod odpowiednim adresem
+        mov     byte [edx + ecx - 1], 0       ;zapisz 0 pod odpowiednim adresem
         dec     ecx             ;dekrementacja petli -> samo ustawi flagi wiec nie trzeba test
         ;test    ecx, ecx
         jnz     set_up_saving_space
