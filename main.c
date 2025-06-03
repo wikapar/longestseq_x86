@@ -8,7 +8,7 @@ int main(int argc, char* argv[]){
         for(int i=1; i<argc; i+=2){
             printf("%s", argv[i]); //input string
             printf("%s", argv[i+1]); //pattern
-            printf(" -> %d\n", longestseq(argv[i], argv[i+1]));
+            printf(" -> %s\n", longestseq(argv[i], argv[i+1]));
         }
     }
 }
