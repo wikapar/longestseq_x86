@@ -71,7 +71,7 @@ continue_loop:
         jnz      next_char ;jesli nie zero -> kontynuuj, jesli 0 -> idz do fin
 
 fin:
-        mov     ebx, [esp]  ;ebx to ptr na poczatek najdluzszej sekwencji
+        mov     ebx, edx  ;ebx to ptr na poczatek najdluzszej sekwencji
         add     ebx, ecx        ;dodaj dlugosc zeby otrzymac pointer na koniec stringa
         mov     byte [ebx], 0   ;zapisz 0 na koncu zwracanego stringa
         mov     eax, edx  ;do eax pointer na zwracany string
