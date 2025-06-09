@@ -17,7 +17,6 @@ longestseq:
 set_up_saving_space:
         mov     byte [esp + ecx-1], 0       ;zapisz 0 pod odpowiednim adresem
         dec     ecx             ;dekrementacja petli -> samo ustawi flagi wiec nie trzeba test
-        ;test    ecx, ecx
         jnz     set_up_saving_space
 
 
@@ -34,7 +33,7 @@ save_pattern_on_stack:
 set_up_finding_sequence:
         mov     ebx, [ebp+8]    ;ebx wskazuje na string z argumentu
         mov     edi, ebx    ;edi bedzie wskazywac na poczatek aktualnej
-        xor     edx, edx        ;edx wskaznik na najdluzszy string
+        mov     edi, ebx        ;edx wskaznik na najdluzszy string
         xor     esi, esi        ;esi bedzie licznikiem aktualnej sekwencji
         xor     ecx, ecx        ;ecx bedzie licznikiem najdluzszej sekwencji
         ;al bedzie na znak czytany
@@ -52,7 +51,7 @@ next_char:
         dec     edi             ; wiec zmniejsz o 1 zeby zachowac poczatek aktualnej sekwencji
 increase_len_counter:
         inc     esi    ;zwieksz licznik aktualnej sekwencji
-        jmp     next_char
+        jmp     next_char ; nigdy nie wyjdziemy z pętli jeśli znaleziony znak jest we wzorcu -> 0 nigdy nie będzie we wzorcu
 
 not_in_pattern:
         test    esi, esi
