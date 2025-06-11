@@ -33,7 +33,7 @@ save_pattern_on_stack:
 set_up_finding_sequence:
         mov     ebx, [ebp+8]    ;ebx wskazuje na string z argumentu
         mov     edi, ebx    ;edi bedzie wskazywac na poczatek aktualnej
-        mov     edi, ebx        ;edx wskaznik na najdluzszy string
+        mov     edx, ebx        ;edx wskaznik na najdluzszy string
         xor     esi, esi        ;esi bedzie licznikiem aktualnej sekwencji
         xor     ecx, ecx        ;ecx bedzie licznikiem najdluzszej sekwencji
         ;al bedzie na znak czytany
