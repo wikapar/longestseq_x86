@@ -5,25 +5,26 @@ longestseq:
         push    ebp             ; ebp na stos
         mov     ebp, esp        ; ustaw ebp jako esp
 
-        push    edi
+        sub     esp, 256        ;alokacja zmiennych lokalnych
+
+        push    edi     ;zapamietywanie rejestrow saved
         push    esi
         push    ebx
 
-        sub     esp, 256        ;zarezerwuj 256 miejsca na stosie
-
-        mov     ecx, 256        ;ecx jako loop counter
+        mov     ecx, -256        ;ecx jako loop counter
         mov     ebx, [ebp+12]   ;wskazuje na wzorzec
 
 set_up_saving_space:
-        mov     byte [esp + ecx-1], 0       ;zapisz 0 pod odpowiednim adresem
-        dec     ecx             ;dekrementacja petli -> samo ustawi flagi wiec nie trzeba test
+        mov     byte [ebp + ecx], 0       ;zapisz 0 pod odpowiednim adresem
+        inc     ecx             ;dekrementacja petli -> samo ustawi flagi wiec nie trzeba test
         jnz     set_up_saving_space
 
 
         mov     al, [ebx]       ;al ma znak z patterna
 save_pattern_on_stack:
         movzx   eax, al ;rozszerz al zerami do eax
-        mov     byte [esp + eax], 1      ;zapisz 1 na miejscu odpowiadajacym znakowi
+        neg     eax
+        mov     byte [ebp + eax], 1      ;zapisz 1 na miejscu odpowiadajacym znakowi
         inc     ebx
 
         mov     al, [ebx]       ;al ma teraz przyszly znak
@@ -42,7 +43,8 @@ next_char:
         mov     al, [ebx] ;al ma aktualny znak
         inc     ebx ;ebx wskazuje na nastepny znak
         movzx   eax, al ;rozszerz al zerami do eax
-        cmp     byte [esp + eax], 1
+        neg     eax
+        cmp     byte [ebp + eax], 1
         jne     not_in_pattern ;nie jest we wzorcu -> albo kontynuuj albo skoncz sekwencje jesli zaczeta
         ;jest we wzorcu
         test    esi, esi  ;czy esi to 0 -> jesli tak sekwencja nie zaczeta
@@ -74,9 +76,12 @@ fin:
         add     ebx, ecx        ;dodaj dlugosc zeby otrzymac pointer na koniec stringa
         mov     byte [ebx], 0   ;zapisz 0 na koncu zwracanego stringa
         mov     eax, edx  ;do eax pointer na zwracany string
-        add     esp, 256 ; zwolnienie miejsca na stosie
+
+        ;odtworzenie rejestrow saved
         pop     ebx
         pop     esi
         pop     edi
+
+        mov     esp, ebp ;usuniecie zmiennych lokalnych
         pop     ebp     ; przywroc ebp
         ret
